@@ -16,8 +16,10 @@ export default function BoardSetup({ gameState, playerId }: { gameState: GameSta
   useEffect(() => {
     if (board.length === 0 && !player.isReady) {
       if (player.board && player.board.length === 25) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setBoard(player.board);
       } else {
+         
         setBoard(generateRandomBoard());
       }
     }
@@ -48,8 +50,8 @@ export default function BoardSetup({ gameState, playerId }: { gameState: GameSta
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to set ready');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
       setIsSubmitting(false);
     }
   };
@@ -88,6 +90,7 @@ export default function BoardSetup({ gameState, playerId }: { gameState: GameSta
                 key={`${idx}-${num}`}
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
+                // eslint-disable-next-line react-hooks/purity
                 transition={{ delay: Math.random() * 0.2 }}
                 className={`
                   aspect-square rounded-xl flex items-center justify-center text-lg sm:text-xl font-bold border-2
@@ -112,7 +115,7 @@ export default function BoardSetup({ gameState, playerId }: { gameState: GameSta
         <div className="glass-panel p-6 rounded-3xl">
           <h3 className="font-bold mb-4">Setup</h3>
           <p className="text-sm text-text-muted mb-6">
-            Review your board. You can randomize it until you're happy with the numbers.
+            Review your board. You can randomize it until you&apos;re happy with the numbers.
           </p>
           
           <button
@@ -160,7 +163,7 @@ export default function BoardSetup({ gameState, playerId }: { gameState: GameSta
   );
 }
 
-function PlayerStatusRow({ player, isMe }: { player: any, isMe: boolean }) {
+function PlayerStatusRow({ player, isMe }: { player: { id: string, name: string, isReady: boolean }, isMe: boolean }) {
   return (
     <div className="flex items-center justify-between bg-bg-base/50 p-3 rounded-lg border border-white/5">
       <div className="flex items-center gap-2">

@@ -58,7 +58,7 @@ export default function Lobby({ gameState, playerId }: { gameState: GameState, p
   );
 }
 
-function PlayerCard({ player, title, isMe, isWaiting }: { player: any, title: string, isMe?: boolean, isWaiting?: boolean }) {
+function PlayerCard({ player, isMe, isWaiting }: { player: { name: string, connected: boolean } | null, title?: string, isMe?: boolean, isWaiting?: boolean }) {
   if (isWaiting) {
     return (
       <div className="border border-dashed border-white/20 rounded-2xl p-6 flex flex-col items-center justify-center h-40 bg-white/5 opacity-50">

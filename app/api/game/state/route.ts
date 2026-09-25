@@ -16,6 +16,14 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Room not found' }, { status: 404 });
     }
 
+    const state = rows[0].state;
+
+    // Check if no active movement for 5 minutes
+    if (Date.now() - state.updatedAt > 5 * 60 * 1000) {
+      await sql`DELETE FROM games WHERE id = ${roomId}`;
+      return NextResponse.json({ error: 'Room expired due to inactivity' }, { status: 404 });
+    }
+
     return NextResponse.json({ state: rows[0].state });
   } catch (error) {
     console.error('State fetch error:', error);

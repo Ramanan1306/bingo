@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GameState } from '@/types/game';
-import { checkBingo } from '@/lib/bingoLogic';
+ 
 import { Trophy, RefreshCw, AlertCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -52,6 +52,7 @@ export default function MainGame({ gameState, playerId, setGameState }: { gameSt
 
   useEffect(() => {
     if (lastCalled !== null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPopupNumber(lastCalled);
       const timer = setTimeout(() => setPopupNumber(null), 1500);
       return () => clearTimeout(timer);
@@ -77,8 +78,8 @@ export default function MainGame({ gameState, playerId, setGameState }: { gameSt
       if (setGameState && data.state) {
         setGameState(data.state);
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setIsCalling(false);
     }
@@ -198,7 +199,7 @@ export default function MainGame({ gameState, playerId, setGameState }: { gameSt
   );
 }
 
-function PlayerBoard({ player, isMe, calledNumbers, winningLines, onSelectNumber, isMyTurn }: { player: any, isMe: boolean, calledNumbers: number[], winningLines?: number[][], onSelectNumber?: (num: number) => void, isMyTurn?: boolean }) {
+function PlayerBoard({ player, isMe, calledNumbers, winningLines, onSelectNumber, isMyTurn }: { player: { name: string, board: number[] }, isMe: boolean, calledNumbers: number[], winningLines?: number[][], onSelectNumber?: (num: number) => void, isMyTurn?: boolean }) {
   const linesCount = winningLines ? winningLines.length : 0;
   const isWinner = linesCount >= 5;
   const bingoWord = "BINGO";

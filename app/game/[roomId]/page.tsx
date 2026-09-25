@@ -25,6 +25,7 @@ export default function GamePage({ params }: { params: Promise<{ roomId: string 
       return;
     }
     
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPlayerId(storedPid);
   }, [router]);
 

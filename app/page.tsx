@@ -46,8 +46,8 @@ export default function Home() {
       if (!res.ok) throw new Error(data.error || 'Failed to create room');
       
       router.push(`/game/${data.roomId}`);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
       setIsLoading(false);
     }
   };
@@ -74,8 +74,8 @@ export default function Home() {
       if (!res.ok) throw new Error(data.error || 'Failed to join room');
       
       router.push(`/game/${roomCode.toUpperCase()}`);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
       setIsLoading(false);
     }
   };

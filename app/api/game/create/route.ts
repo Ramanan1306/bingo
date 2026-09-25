@@ -44,6 +44,13 @@ export async function POST(request: Request) {
       updatedAt: Date.now(),
     };
 
+    // Clean up old games (inactive for 5 minutes)
+    try {
+      await sql`DELETE FROM games WHERE updated_at < NOW() - INTERVAL '5 minutes'`;
+    } catch (cleanupErr) {
+      console.error('Failed to cleanup old games:', cleanupErr);
+    }
+
     await sql`
       INSERT INTO games (id, state) 
       VALUES (${roomId}, ${JSON.stringify(initialState)}::jsonb)

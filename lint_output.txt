@@ -1,0 +1,126 @@
+
+> bingo@0.1.0 lint
+> eslint
+
+
+/Users/ramananvasanth/bingo/app/api/game/call/route.ts
+  4:10  warning  'checkBingo' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/ramananvasanth/bingo/app/game/[roomId]/page.tsx
+  28:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/ramananvasanth/bingo/app/game/[roomId]/page.tsx:28:5
+  26 |     }
+  27 |     
+> 28 |     setPlayerId(storedPid);
+     |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  29 |   }, [router]);
+  30 |
+  31 |   if (loading || !playerId) {  react-hooks/set-state-in-effect
+
+/Users/ramananvasanth/bingo/app/page.tsx
+  49:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  77:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/ramananvasanth/bingo/components/game/BoardSetup.tsx
+   19:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/ramananvasanth/bingo/components/game/BoardSetup.tsx:19:9
+  17 |     if (board.length === 0 && !player.isReady) {
+  18 |       if (player.board && player.board.length === 25) {
+> 19 |         setBoard(player.board);
+     |         ^^^^^^^^ Avoid calling setState() directly within an effect
+  20 |       } else {
+  21 |         setBoard(generateRandomBoard());
+  22 |       }  react-hooks/set-state-in-effect
+   51:19  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+   91:38  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/ramananvasanth/bingo/components/game/BoardSetup.tsx:91:38
+  89 |                 initial={{ scale: 0.8, opacity: 0 }}
+  90 |                 animate={{ scale: 1, opacity: 1 }}
+> 91 |                 transition={{ delay: Math.random() * 0.2 }}
+     |                                      ^^^^^^^^^^^^^ Cannot call impure function
+  92 |                 className={`
+  93 |                   aspect-square rounded-xl flex items-center justify-center text-lg sm:text-xl font-bold border-2
+  94 |                   ${player.isReady ? 'bg-bg-secondary border-white/5 opacity-80' : 'bg-bg-base border-white/10 hover:border-accent/50'}                                                                                                                     react-hooks/purity
+  115:62  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react/no-unescaped-entities
+  163:54  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+
+/Users/ramananvasanth/bingo/components/game/EmojiChat.tsx
+   5:21  warning  'EmojiMessage' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  44:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/ramananvasanth/bingo/components/game/EmojiChat.tsx:44:7
+  42 |       }));
+  43 |       
+> 44 |       setFloatingEmojis(prev => [...prev, ...newFloating]);
+     |       ^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  45 |       
+  46 |       // Remove them after animation
+  47 |       setTimeout(() => {  react-hooks/set-state-in-effect
+  76:78  error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/ramananvasanth/bingo/components/game/EmojiChat.tsx:76:78
+  74 |             <motion.div
+  75 |               key={item.id}
+> 76 |               initial={{ y: '100vh', opacity: 1, x: `calc(${item.left}vw + ${Math.random() * 20 - 10}px)`, scale: 0.5 }}
+     |                                                                              ^^^^^^^^^^^^^ Cannot call impure function
+  77 |               animate={{ y: '-20vh', opacity: 0, scale: 2 }}
+  78 |               exit={{ opacity: 0 }}
+  79 |               transition={{ duration: 2.5, ease: 'easeOut' }}                                                                                                                                             react-hooks/purity
+
+/Users/ramananvasanth/bingo/components/game/GameHeader.tsx
+  4:18  warning  'Volume2' is defined but never used   @typescript-eslint/no-unused-vars
+  4:27  warning  'VolumeX' is defined but never used   @typescript-eslint/no-unused-vars
+  7:49  warning  'playerId' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/ramananvasanth/bingo/components/game/Lobby.tsx
+  61:31  warning  'title' is defined but never used         @typescript-eslint/no-unused-vars
+  61:67  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/ramananvasanth/bingo/components/game/MainGame.tsx
+    6:10   warning  'checkBingo' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+   55:7    error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/ramananvasanth/bingo/components/game/MainGame.tsx:55:7
+  53 |   useEffect(() => {
+  54 |     if (lastCalled !== null) {
+> 55 |       setPopupNumber(lastCalled);
+     |       ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  56 |       const timer = setTimeout(() => setPopupNumber(null), 1500);
+  57 |       return () => clearTimeout(timer);
+  58 |     }  react-hooks/set-state-in-effect
+   80:19   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+  201:105  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+
+✖ 21 problems (14 errors, 7 warnings)
+

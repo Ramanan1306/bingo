@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
 import { GameState } from '@/types/game';
-import { checkBingo, getWinningLines } from '@/lib/bingoLogic';
+import { getWinningLines } from '@/lib/bingoLogic';
 
 export async function POST(request: Request) {
   try {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GameState, EmojiMessage } from '@/types/game';
+import { GameState } from '@/types/game';
 
 const EMOJIS = ['😂', '😡', '😭', '💀', '🎉', '👍', '👎', '🤯'];
 
@@ -38,9 +38,11 @@ export default function EmojiChat({ gameState, playerId }: { gameState: GameStat
         id: msg.id,
         emoji: msg.emoji,
         left: msg.playerId === playerId ? 80 : 20, // Different sides for me and opponent
+        randomX: Math.random() * 20 - 10,
         isMe: msg.playerId === playerId
       }));
       
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFloatingEmojis(prev => [...prev, ...newFloating]);
       
       // Remove them after animation
@@ -49,6 +51,8 @@ export default function EmojiChat({ gameState, playerId }: { gameState: GameStat
       }, 3000);
     }
   }, [gameState.messages, playerId]);
+
+  const [textMessage, setTextMessage] = useState('');
 
   const sendEmoji = async (emoji: string) => {
     setIsOpen(false);
@@ -65,6 +69,25 @@ export default function EmojiChat({ gameState, playerId }: { gameState: GameStat
     }
   };
 
+  const handleTextSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!textMessage.trim()) return;
+    
+    const msg = textMessage.trim();
+    setTextMessage('');
+    setIsOpen(false);
+    
+    try {
+      await fetch('/api/game/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ roomId: gameState.roomId, playerId, emoji: msg })
+      });
+    } catch (err) {
+      console.error('Failed to send text message', err);
+    }
+  };
+
   return (
     <>
       {/* Floating Emojis Overlay */}
@@ -73,13 +96,19 @@ export default function EmojiChat({ gameState, playerId }: { gameState: GameStat
           {floatingEmojis.map((item) => (
             <motion.div
               key={item.id}
-              initial={{ y: '100vh', opacity: 1, x: `calc(${item.left}vw + ${Math.random() * 20 - 10}px)`, scale: 0.5 }}
+              initial={{ y: '100vh', opacity: 1, x: `calc(${item.left}vw + ${('randomX' in item ? item.randomX : 0)}px)`, scale: 0.5 }}
               animate={{ y: '-20vh', opacity: 0, scale: 2 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 2.5, ease: 'easeOut' }}
               className="absolute bottom-0 text-5xl sm:text-7xl"
             >
-              {item.emoji}
+              {item.emoji.length > 2 ? (
+                <div className="bg-bg-secondary text-white text-lg px-4 py-2 rounded-2xl border border-white/20 shadow-xl max-w-[200px] break-words whitespace-normal text-center leading-tight">
+                  {item.emoji}
+                </div>
+              ) : (
+                item.emoji
+              )}
             </motion.div>
           ))}
         </AnimatePresence>
@@ -104,6 +133,19 @@ export default function EmojiChat({ gameState, playerId }: { gameState: GameStat
                   {e}
                 </button>
               ))}
+              <form onSubmit={handleTextSubmit} className="w-full mt-2 flex">
+                <input 
+                  type="text" 
+                  value={textMessage}
+                  onChange={e => setTextMessage(e.target.value)}
+                  placeholder="Type a message..."
+                  maxLength={50}
+                  className="w-full bg-bg-base border border-white/10 rounded-l-xl px-3 py-2 text-sm text-white placeholder-text-muted/50 focus:outline-none focus:border-accent"
+                />
+                <button type="submit" className="bg-accent hover:bg-accent-hover px-3 rounded-r-xl font-bold text-sm">
+                  Send
+                </button>
+              </form>
             </motion.div>
           )}
         </AnimatePresence>

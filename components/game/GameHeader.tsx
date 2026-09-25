@@ -1,11 +1,22 @@
 'use client';
 
+import { useEffect } from 'react';
 import { GameState } from '@/types/game';
-import { Share2, Volume2, VolumeX, LogOut } from 'lucide-react';
+import { Share2, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function GameHeader({ gameState, playerId }: { gameState: GameState, playerId: string }) {
   const router = useRouter();
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      // Use keepalive or navigator.sendBeacon to ensure it goes through
+      navigator.sendBeacon('/api/game/leave', JSON.stringify({ roomId: gameState.roomId, playerId }));
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [gameState.roomId, playerId]);
 
   const handleShare = () => {
     const url = window.location.href;
@@ -20,8 +31,17 @@ export default function GameHeader({ gameState, playerId }: { gameState: GameSta
     }
   };
 
-  const handleLeave = () => {
+  const handleLeave = async () => {
     if (confirm('Are you sure you want to leave the game?')) {
+      try {
+        await fetch('/api/game/leave', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ roomId: gameState.roomId, playerId })
+        });
+      } catch (err) {
+        console.error(err);
+      }
       router.push('/');
     }
   };
