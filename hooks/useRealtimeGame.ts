@@ -10,7 +10,6 @@ export function useRealtimeGame(roomId: string) {
 
   useEffect(() => {
     let isMounted = true;
-    let intervalId: NodeJS.Timeout;
 
     async function fetchState() {
       try {
@@ -25,10 +24,10 @@ export function useRealtimeGame(roomId: string) {
           setGameState(data.state as GameState);
           setError(null);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         if (isMounted) {
           console.error("Failed to fetch state:", err);
-          setError(err.message || 'Failed to load game');
+          setError(err instanceof Error ? err.message : 'Failed to load game');
         }
       } finally {
         if (isMounted) setLoading(false);
@@ -38,7 +37,7 @@ export function useRealtimeGame(roomId: string) {
     fetchState();
     
     // Poll every 1.5 seconds for realtime state updates
-    intervalId = setInterval(fetchState, 1500);
+    const intervalId = setInterval(fetchState, 1500);
 
     return () => {
       isMounted = false;
