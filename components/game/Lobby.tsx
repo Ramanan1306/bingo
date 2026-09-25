@@ -68,6 +68,8 @@ function PlayerCard({ player, isMe, isWaiting }: { player: { name: string, conne
     );
   }
 
+  if (!player) return null;
+
   return (
     <div className={`glass-panel border-2 ${isMe ? 'border-accent/50' : 'border-white/5'} rounded-2xl p-6 flex flex-col items-center justify-center h-40 relative overflow-hidden`}>
       {isMe && <div className="absolute top-0 left-0 w-full h-1 bg-accent glow-box" />}
