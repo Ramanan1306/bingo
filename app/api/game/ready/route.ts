@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       const players = Object.values(state.players);
       if (players.length === 2 && players.every(p => p.isReady)) {
         state.status = 'COUNTDOWN';
-        state.currentTurn = 'PLAYER_1';
+        state.currentTurn = Math.random() < 0.5 ? 'PLAYER_1' : 'PLAYER_2';
       } else {
         state.status = 'WAITING_FOR_READY';
       }

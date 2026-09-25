@@ -12,6 +12,13 @@ export type GameStatus =
 
 export type Turn = 'PLAYER_1' | 'PLAYER_2';
 
+export interface EmojiMessage {
+  id: string;
+  playerId: string;
+  emoji: string;
+  timestamp: number;
+}
+
 export interface GameState {
   roomId: string;
   status: GameStatus;
@@ -23,6 +30,7 @@ export interface GameState {
   winner: string | 'DRAW' | null; // playerId or DRAW
   winningLines: Record<string, number[][]>; // playerId -> array of winning lines (each line is array of indices)
   rematchRequests: string[]; // array of playerIds who want a rematch
+  messages?: EmojiMessage[]; // chat messages
   createdAt: number;
   updatedAt: number;
 }

@@ -7,6 +7,7 @@ import Lobby from '@/components/game/Lobby';
 import BoardSetup from '@/components/game/BoardSetup';
 import MainGame from '@/components/game/MainGame';
 import GameHeader from '@/components/game/GameHeader';
+import EmojiChat from '@/components/game/EmojiChat';
 
 export default function GamePage({ params }: { params: Promise<{ roomId: string }> }) {
   const router = useRouter();
@@ -91,6 +92,9 @@ export default function GamePage({ params }: { params: Promise<{ roomId: string 
           <MainGame gameState={gameState} playerId={playerId} setGameState={setGameState} />
         )}
       </main>
+      
+      {/* Global Game Components */}
+      <EmojiChat gameState={gameState} playerId={playerId} />
     </div>
   );
 }
